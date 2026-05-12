@@ -1,10 +1,11 @@
+import { memo } from "react";
 import { Pin } from "lucide-react";
 
 import type { Note } from "../../types";
 import { formatTimestamp } from "../../utils/formatDate";
 import { Badge } from "../UI/Badge";
 
-export function NoteCard({ note, onOpen }: { note: Note; onOpen: (id: string) => void }) {
+export const NoteCard = memo(function NoteCard({ note, onOpen }: { note: Note; onOpen: (id: string) => void }) {
   const recent = Date.now() - note.updatedAt < 60 * 60 * 1000;
   const preview = note.content.replace(/\r\n/g, "\n").trim();
 
@@ -29,4 +30,4 @@ export function NoteCard({ note, onOpen }: { note: Note; onOpen: (id: string) =>
       </div>
     </button>
   );
-}
+});

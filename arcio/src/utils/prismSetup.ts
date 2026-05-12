@@ -1,7 +1,10 @@
 import Prism from "prismjs";
 
+// Import core languages and dependencies
+import "prismjs/components/prism-clike";
 import "prismjs/components/prism-markup";
 import "prismjs/components/prism-css";
+import "prismjs/components/prism-c";
 import "prismjs/components/prism-javascript";
 import "prismjs/components/prism-typescript";
 import "prismjs/components/prism-json";
@@ -40,12 +43,30 @@ function escapeHtml(text: string): string {
     .replace(/'/g, "&#039;");
 }
 
+/**
+ * Highlights code using PrismJS.
+ * Safeguarded against missing grammars or Prism internal errors.
+ */
 export function highlightCode(code: string, language: Language): string {
-  const grammar = MAP[language];
-  if (!grammar || !Prism.languages[grammar]) {
+  if (!code) return "";
+  
+  const grammarName = MAP[language];
+  if (!grammarName) {
     return escapeHtml(code);
   }
-  return Prism.highlight(code, Prism.languages[grammar]!, grammar);
+
+  const grammar = Prism.languages[grammarName];
+  if (!grammar) {
+    console.warn(`Prism grammar not found for: ${grammarName}`);
+    return escapeHtml(code);
+  }
+
+  try {
+    return Prism.highlight(code, grammar, grammarName);
+  } catch (err) {
+    console.error("Prism highlight error:", err);
+    return escapeHtml(code);
+  }
 }
 
 export function prismGrammarName(language: Language): string | null {

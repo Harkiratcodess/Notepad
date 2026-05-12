@@ -51,26 +51,35 @@ export function NoteEditor({ note, onClose }: { note: Note; onClose: () => void 
     return looksLikeCodeBlock(content);
   }, [content, hintDismissed]);
 
-  const taskLineIndexes = useMemo(() => {
-    const lines = content.split(/\r?\n/);
+  const lines = useMemo(() => content.split(/\r?\n/), [content]);
+
+  const taskItems = useMemo(() => {
     return lines
-      .map((line, i) => (TASK_LINE.test(line) ? i : -1))
-      .filter((i) => i >= 0);
-  }, [content]);
+      .map((line, i) => {
+        const m = line.match(TASK_LINE);
+        if (!m) return null;
+        return {
+          index: i,
+          checked: m[3].toLowerCase() === "x",
+          label: m[5],
+        };
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null);
+  }, [lines]);
 
   const toggleTask = useCallback(
     (lineIndex: number) => {
-      const lines = content.split(/\r?\n/);
-      const line = lines[lineIndex];
+      const nextLines = [...lines];
+      const line = nextLines[lineIndex];
       if (!line) return;
       const m = line.match(TASK_LINE);
       if (!m) return;
       const checked = m[3].toLowerCase() === "x";
       const nextMark = checked ? " " : "x";
-      lines[lineIndex] = `${m[1]}${m[2]}${nextMark}${m[4]}${m[5]}`;
-      setContent(lines.join("\n"));
+      nextLines[lineIndex] = `${m[1]}${m[2]}${nextMark}${m[4]}${m[5]}`;
+      setContent(nextLines.join("\n"));
     },
-    [content],
+    [lines],
   );
 
   return (
@@ -156,26 +165,22 @@ export function NoteEditor({ note, onClose }: { note: Note; onClose: () => void 
           spellCheck={false}
         />
 
-        {taskLineIndexes.length > 0 ? (
+        {taskItems.length > 0 ? (
           <div className="mt-3 border-2 border-arcio-border bg-arcio-surface p-2" style={{ borderRadius: "var(--radius)" }}>
             <div className="mb-2 flex items-center gap-2">
               <Badge variant="lang">Checklist</Badge>
             </div>
             <ul className="space-y-1">
-              {taskLineIndexes.map((idx) => {
-                const line = content.split(/\r?\n/)[idx] ?? "";
-                const m = line.match(TASK_LINE);
-                const checked = m ? m[3].toLowerCase() === "x" : false;
-                const label = m?.[5] ?? "";
+              {taskItems.map((item) => {
                 return (
-                  <li key={idx} className="flex items-start gap-2 font-ui text-[13px]">
+                  <li key={item.index} className="flex items-start gap-2 font-ui text-[13px]">
                     <input
                       type="checkbox"
-                      checked={checked}
-                      onChange={() => toggleTask(idx)}
+                      checked={item.checked}
+                      onChange={() => toggleTask(item.index)}
                       className="mt-1 h-4 w-4 accent-[#4CAF82]"
                     />
-                    <span className={checked ? "text-arcio-muted line-through" : "text-arcio-text"}>{label}</span>
+                    <span className={item.checked ? "text-arcio-muted line-through" : "text-arcio-text"}>{item.label}</span>
                   </li>
                 );
               })}

@@ -1,7 +1,7 @@
 import "prismjs/themes/prism-tomorrow.css";
 
 import { Code2, Copy, Pin } from "lucide-react";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 
 import type { Language, Snippet } from "../../types";
 import { formatTimestamp } from "../../utils/formatDate";
@@ -23,7 +23,7 @@ const LANG_BADGE: Record<Language, string> = {
   plaintext: "bg-[#888888] text-white",
 };
 
-export function SnippetCard({
+export const SnippetCard = memo(function SnippetCard({
   snippet,
   onOpen,
   onExpand,
@@ -56,7 +56,7 @@ export function SnippetCard({
       <div className="mb-2 flex items-start justify-between gap-2">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
           <span
-            className={`inline-flex border-2 border-arcio-border px-1.5 py-0.5 text-[11px] font-bold uppercase ${LANG_BADGE[snippet.language]}`}
+            className={`inline-flex border-2 border-arcio-border px-1.5 py-0.5 text-[11px] font-bold uppercase ${LANG_BADGE[snippet.language] || "bg-arcio-surface text-arcio-text"}`}
             style={{ borderRadius: "var(--radius)" }}
           >
             {snippet.language === "plaintext" ? "TXT" : snippet.language}
@@ -112,4 +112,4 @@ export function SnippetCard({
       </div>
     </div>
   );
-}
+});
