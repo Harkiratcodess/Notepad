@@ -1,0 +1,90 @@
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/600.css";
+@import "@fontsource/jetbrains-mono/700.css";
+@import "@fontsource/fira-code/400.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f5f3ef;
+  --surface: #ffffff;
+  --border: #0a0a0a;
+  --shadow: 3px 3px 0px #0a0a0a;
+  --accent: #f5c842;
+  --accent-green: #4caf82;
+  --danger: #e84040;
+  --text: #0a0a0a;
+  --text-muted: #888888;
+  --radius: 4px;
+  --font-ui: "JetBrains Mono", monospace;
+  --font-code: "Fira Code", monospace;
+  --code-bg: #0f0f0f;
+}
+
+[data-theme="dark"] {
+  --bg: #1a1a1a;
+  --surface: #242424;
+  --border: #ffffff;
+  --shadow: 3px 3px 0px #ffffff;
+  --text: #f0f0f0;
+}
+
+html,
+body,
+#root {
+  width: 420px;
+  height: 600px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.notepad-bg {
+  background-color: var(--bg);
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 22px,
+    rgba(10, 10, 10, 0.06) 23px
+  );
+}
+
+[data-theme="dark"] .notepad-bg {
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 22px,
+    rgba(255, 255, 255, 0.05) 23px
+  );
+}
+
+.brutal-border {
+  border: 2px solid var(--border);
+}
+
+.brutal-shadow {
+  box-shadow: var(--shadow);
+}
+
+.code-block {
+  background: var(--code-bg);
+  color: #f0f0f0;
+}
+
+pre[class*="language-"],
+.code-block pre {
+  margin: 0;
+  background: transparent !important;
+}
+
+.token {
+  text-shadow: none !important;
+}
