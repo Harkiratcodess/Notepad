@@ -70,8 +70,9 @@ export function SnippetEditor({
   const handleSave = useCallback(async () => {
     setIsSaving(true);
     await updateItem(snippet.id, { filename, language, code });
-    setTimeout(() => setIsSaving(false), 1500);
-  }, [snippet.id, filename, language, code, updateItem]);
+    setIsSaving(false);
+    onClose();
+  }, [snippet.id, filename, language, code, updateItem, onClose]);
 
   const previewHtml = useMemo(() => highlightCode(code, language), [code, language]);
 
@@ -142,6 +143,7 @@ export function SnippetEditor({
       <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3">
         <input
           autoFocus
+          onFocus={(e) => e.target.select()}
           value={filename}
           onChange={(e) => setFilename(e.target.value)}
           className="w-full border-none bg-transparent font-ui text-[18px] font-bold text-arcio-text outline-none focus:placeholder-transparent"

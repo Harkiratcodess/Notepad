@@ -52,8 +52,9 @@ export function NoteEditor({ note, onClose }: { note: Note; onClose: () => void 
   const handleSave = useCallback(async () => {
     setIsSaving(true);
     await updateItem(note.id, { title, content });
-    setTimeout(() => setIsSaving(false), 1500);
-  }, [note.id, title, content, updateItem]);
+    setIsSaving(false);
+    onClose();
+  }, [note.id, title, content, updateItem, onClose]);
 
   const showSnippetHint = useMemo(() => {
     if (hintDismissed) return false;
@@ -149,6 +150,7 @@ export function NoteEditor({ note, onClose }: { note: Note; onClose: () => void 
       <div className="min-h-0 flex-1 overflow-y-auto p-3">
         <input
           autoFocus
+          onFocus={(e) => e.target.select()}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="mb-2 w-full border-none bg-transparent font-ui text-[18px] font-bold text-arcio-text outline-none focus:placeholder-transparent"
