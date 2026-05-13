@@ -11,6 +11,7 @@ interface MenuAction {
   icon: JSX.Element;
   onClick: () => void;
   disabled?: boolean;
+  shortcut?: string;
 }
 
 interface MenuItem {
@@ -42,12 +43,33 @@ export function MenuBar({ onToggleSearch }: Props) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      
+      const key = e.key.toLowerCase();
+      if (key === "n") {
+        e.preventDefault();
+        void createNote();
+      } else if (key === "s") {
+        e.preventDefault();
+        void createSnippet();
+      } else if (key === "r") {
+        e.preventDefault();
+        void loadItems();
+      }
+    };
+    
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [createNote, createSnippet, loadItems]);
+
   const menuItems: MenuItem[] = [
     {
       label: "File",
       actions: [
-        { label: "New Note", icon: <FileText className="h-3.5 w-3.5" />, onClick: () => { void createNote(); } },
-        { label: "New Snippet", icon: <FileCode className="h-3.5 w-3.5" />, onClick: () => { void createSnippet(); } },
+        { label: "New Note", icon: <FileText className="h-3.5 w-3.5" />, onClick: () => { void createNote(); }, shortcut: "Ctrl+N" },
+        { label: "New Snippet", icon: <FileCode className="h-3.5 w-3.5" />, onClick: () => { void createSnippet(); }, shortcut: "Ctrl+S" },
       ],
     },
     {
@@ -59,7 +81,7 @@ export function MenuBar({ onToggleSearch }: Props) {
           onClick: () => { if (activeItemId) void deleteItem(activeItemId); },
           disabled: !activeItemId 
         },
-        { label: "Refresh All", icon: <RefreshCw className="h-3.5 w-3.5" />, onClick: () => { void loadItems(); } },
+        { label: "Refresh All", icon: <RefreshCw className="h-3.5 w-3.5" />, onClick: () => { void loadItems(); }, shortcut: "Ctrl+R" },
       ],
     },
     {
@@ -101,10 +123,15 @@ export function MenuBar({ onToggleSearch }: Props) {
                         action.onClick();
                         setActiveMenu(null);
                       }}
-                      className={`flex w-full items-center gap-3 px-3 py-2 text-[12px] font-medium text-left transition-colors ${action.disabled ? "opacity-30 cursor-not-allowed" : "text-arcio-text hover:bg-arcio-accent"}`}
+                      className={`flex w-full items-center justify-between px-3 py-2 text-[12px] font-medium transition-colors ${action.disabled ? "opacity-30 cursor-not-allowed" : "text-arcio-text hover:bg-arcio-accent"}`}
                     >
-                      {action.icon}
-                      {action.label}
+                      <div className="flex items-center gap-3">
+                        {action.icon}
+                        <span>{action.label}</span>
+                      </div>
+                      {action.shortcut && (
+                        <span className="text-[10px] text-arcio-muted ml-4 font-mono">{action.shortcut}</span>
+                      )}
                     </button>
                   ))}
                 </div>

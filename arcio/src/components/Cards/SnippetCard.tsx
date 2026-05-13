@@ -1,9 +1,10 @@
 import "prismjs/themes/prism-tomorrow.css";
 
-import { Code2, Copy, Pin } from "lucide-react";
+import { Code2, Copy, Pin, Trash2 } from "lucide-react";
 import { memo, useMemo } from "react";
 
 import type { Language, Snippet } from "../../types";
+import { useStore } from "../../store/useStore";
 import { formatTimestamp } from "../../utils/formatDate";
 import { highlightCode } from "../../utils/prismSetup";
 
@@ -34,11 +35,13 @@ export const SnippetCard = memo(function SnippetCard({
   onExpand: (id: string) => void;
   onCopy: (code: string) => void;
 }) {
+  const togglePin = useStore((s) => s.togglePin);
+  const deleteItem = useStore((s) => s.deleteItem);
   const html = useMemo(() => highlightCode(snippet.code, snippet.language), [snippet.code, snippet.language]);
 
   return (
     <div
-      className="brutal-border brutal-shadow w-full cursor-pointer bg-arcio-surface p-3 font-ui"
+      className="group brutal-border brutal-shadow relative w-full cursor-pointer bg-arcio-surface p-3 font-ui transition-all hover:bg-arcio-accent"
       style={{ borderRadius: "var(--radius)" }}
       onClick={(e) => {
         if ((e.target as HTMLElement).closest("button")) return;
@@ -53,6 +56,25 @@ export const SnippetCard = memo(function SnippetCard({
       role="button"
       tabIndex={0}
     >
+      <div className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); void togglePin(snippet.id); }}
+          className={`brutal-border flex h-7 w-7 items-center justify-center bg-arcio-surface hover:bg-white ${snippet.pinned ? "bg-arcio-accent" : ""}`}
+          style={{ borderRadius: "var(--radius)" }}
+        >
+          <Pin className="h-3.5 w-3.5" />
+        </button>
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); void deleteItem(snippet.id); }}
+          className="brutal-border flex h-7 w-7 items-center justify-center bg-arcio-surface text-arcio-danger hover:bg-arcio-danger hover:text-white"
+          style={{ borderRadius: "var(--radius)" }}
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </button>
+      </div>
+
       <div className="mb-2 flex items-start justify-between gap-2">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
           <span
@@ -64,7 +86,7 @@ export const SnippetCard = memo(function SnippetCard({
           <span className="truncate text-[13px] font-semibold text-arcio-text">{snippet.filename}</span>
         </div>
         <div className="flex shrink-0 items-center gap-1">
-          {snippet.pinned ? <Pin className="h-4 w-4 text-arcio-text" aria-label="Pinned" /> : null}
+          {snippet.pinned && <Pin className="h-4 w-4 text-arcio-text group-hover:hidden" aria-label="Pinned" />}
           <button
             type="button"
             onClick={(e) => {

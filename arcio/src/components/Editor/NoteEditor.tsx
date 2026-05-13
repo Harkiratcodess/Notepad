@@ -1,10 +1,11 @@
-import { ArrowLeft, Pin, Trash2 } from "lucide-react";
+import { ArrowLeft, Pin, Trash2, Eye, Edit3 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useStore } from "../../store/useStore";
 import type { Note } from "../../types";
 import { looksLikeCodeBlock, TASK_LINE } from "../../utils/codeDetection";
 import { Badge } from "../UI/Badge";
+import { Markdown } from "../UI/Markdown";
 
 function debounce<T extends (...args: never[]) => void>(fn: T, ms: number) {
   let t: ReturnType<typeof setTimeout> | undefined;
@@ -23,6 +24,7 @@ export function NoteEditor({ note, onClose }: { note: Note; onClose: () => void 
   const [title, setTitle] = useState(note.title);
   const [content, setContent] = useState(note.content);
   const [hintDismissed, setHintDismissed] = useState(false);
+  const [isPreview, setIsPreview] = useState(false);
   const noteIdRef = useRef(note.id);
 
   useEffect(() => {
@@ -97,6 +99,15 @@ export function NoteEditor({ note, onClose }: { note: Note; onClose: () => void 
         <div className="flex-1" />
         <button
           type="button"
+          onClick={() => setIsPreview(!isPreview)}
+          className={`brutal-border flex h-8 px-2 items-center gap-1 bg-arcio-surface hover:bg-arcio-accent ${isPreview ? "bg-arcio-accent" : ""}`}
+          style={{ borderRadius: "var(--radius)" }}
+        >
+          {isPreview ? <Edit3 className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          <span className="text-[11px] font-bold">{isPreview ? "Edit" : "Preview"}</span>
+        </button>
+        <button
+          type="button"
           onClick={() => void togglePin(note.id)}
           className={`brutal-border flex h-8 w-8 items-center justify-center bg-arcio-surface hover:bg-arcio-accent ${
             note.pinned ? "bg-arcio-accent" : ""
@@ -157,13 +168,19 @@ export function NoteEditor({ note, onClose }: { note: Note; onClose: () => void 
           </div>
         ) : null}
 
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className="min-h-[220px] w-full resize-none border-2 border-arcio-border bg-arcio-surface p-2 font-code text-[13px] leading-relaxed text-arcio-text outline-none"
-          style={{ borderRadius: "var(--radius)" }}
-          spellCheck={false}
-        />
+        {isPreview ? (
+          <div className="min-h-[220px] w-full brutal-border bg-arcio-surface p-4 overflow-y-auto" style={{ borderRadius: "var(--radius)" }}>
+            <Markdown content={content || "*Empty note*"} />
+          </div>
+        ) : (
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            className="min-h-[220px] w-full resize-none border-2 border-arcio-border bg-arcio-surface p-2 font-code text-[13px] leading-relaxed text-arcio-text outline-none"
+            style={{ borderRadius: "var(--radius)" }}
+            spellCheck={false}
+          />
+        )}
 
         {taskItems.length > 0 ? (
           <div className="mt-3 border-2 border-arcio-border bg-arcio-surface p-2" style={{ borderRadius: "var(--radius)" }}>
