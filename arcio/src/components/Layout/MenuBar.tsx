@@ -45,7 +45,7 @@ export function MenuBar({ onToggleSearch }: Props) {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (!(e.ctrlKey || e.metaKey)) return;
+      if (!e.altKey) return;
       
       const key = e.key.toLowerCase();
       if (key === "n") {
@@ -68,8 +68,8 @@ export function MenuBar({ onToggleSearch }: Props) {
     {
       label: "File",
       actions: [
-        { label: "New Note", icon: <FileText className="h-3.5 w-3.5" />, onClick: () => { void createNote(); }, shortcut: "Ctrl+N" },
-        { label: "New Snippet", icon: <FileCode className="h-3.5 w-3.5" />, onClick: () => { void createSnippet(); }, shortcut: "Ctrl+S" },
+        { label: "New Note", icon: <FileText className="h-3.5 w-3.5" />, onClick: () => { void createNote(); }, shortcut: "Alt+N" },
+        { label: "New Snippet", icon: <FileCode className="h-3.5 w-3.5" />, onClick: () => { void createSnippet(); }, shortcut: "Alt+S" },
       ],
     },
     {
@@ -81,7 +81,7 @@ export function MenuBar({ onToggleSearch }: Props) {
           onClick: () => { if (activeItemId) void deleteItem(activeItemId); },
           disabled: !activeItemId 
         },
-        { label: "Refresh All", icon: <RefreshCw className="h-3.5 w-3.5" />, onClick: () => { void loadItems(); }, shortcut: "Ctrl+R" },
+        { label: "Refresh All", icon: <RefreshCw className="h-3.5 w-3.5" />, onClick: () => { void loadItems(); }, shortcut: "Alt+R" },
       ],
     },
     {

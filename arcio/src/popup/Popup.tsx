@@ -12,6 +12,7 @@ import { SnippetExpandModal } from "../components/UI/SnippetExpandModal";
 import { Toast } from "../components/UI/Toast";
 import { useFilteredItems } from "../hooks/useSearch";
 import { useStore } from "../store/useStore";
+import { SearchBar } from "../components/UI/SearchBar";
 import type { Snippet } from "../types";
 
 export function Popup() {
@@ -39,7 +40,7 @@ export function Popup() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+      if (e.altKey && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setSearchOpen(true);
       }
@@ -62,6 +63,11 @@ export function Popup() {
           <MenuBar
             onToggleSearch={() => setSearchOpen((v) => !v)}
           />
+          {searchOpen && (
+            <div className="absolute top-16 left-0 right-0 z-50 bg-arcio-surface p-4 border-b-2 border-arcio-border brutal-shadow">
+              <SearchBar expanded onClose={() => setSearchOpen(false)} />
+            </div>
+          )}
           <TabBar />
 
           <main className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
