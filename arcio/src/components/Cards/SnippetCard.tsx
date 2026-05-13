@@ -59,6 +59,18 @@ export const SnippetCard = memo(function SnippetCard({
       <div className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onCopy(snippet.code);
+          }}
+          className="brutal-border flex h-7 w-7 shrink-0 items-center justify-center bg-arcio-surface hover:bg-arcio-accent"
+          style={{ borderRadius: "var(--radius)" }}
+          aria-label="Copy code"
+        >
+          <Copy className="h-3.5 w-3.5" />
+        </button>
+        <button
+          type="button"
           onClick={(e) => { e.stopPropagation(); void togglePin(snippet.id); }}
           className={`brutal-border flex h-7 w-7 items-center justify-center bg-arcio-surface hover:bg-white ${snippet.pinned ? "bg-arcio-accent" : ""}`}
           style={{ borderRadius: "var(--radius)" }}
@@ -85,8 +97,8 @@ export const SnippetCard = memo(function SnippetCard({
           </span>
           <span className="truncate text-[13px] font-semibold text-arcio-text">{snippet.filename}</span>
         </div>
-        <div className="flex shrink-0 items-center gap-1">
-          {snippet.pinned && <Pin className="h-4 w-4 text-arcio-text group-hover:hidden" aria-label="Pinned" />}
+        <div className="flex shrink-0 items-center gap-1 group-hover:hidden">
+          {snippet.pinned && <Pin className="h-4 w-4 text-arcio-text" aria-label="Pinned" />}
           <button
             type="button"
             onClick={(e) => {
