@@ -1,1 +1,0 @@
-(function(){"use strict";chrome.action.onClicked.addListener(()=>{chrome.tabs.create({url:chrome.runtime.getURL("src/popup/index.html")})})})();
