@@ -29,6 +29,7 @@ export default defineConfig({
     webExtension({
       manifest: () => readJsonFile("public/manifest.json"),
       disableAutoLaunch: true,
+      additionalInputs: ["src/popup/index.html"],
     }),
     viteStaticCopy({
       targets: [

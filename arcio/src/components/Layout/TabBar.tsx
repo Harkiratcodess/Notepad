@@ -12,7 +12,7 @@ export function TabBar() {
   const setActiveTab = useStore((s) => s.setActiveTab);
 
   return (
-    <nav className="flex h-10 shrink-0 gap-1 border-b-2 border-arcio-border bg-arcio-bg px-2 py-1">
+    <nav className="flex h-12 shrink-0 items-center justify-center gap-2 border-b-2 border-arcio-border bg-arcio-bg px-4">
       {TABS.map((tab) => {
         const active = activeTab === tab.id;
         return (
@@ -20,8 +20,10 @@ export function TabBar() {
             key={tab.id}
             type="button"
             onClick={() => setActiveTab(tab.id)}
-            className={`brutal-border flex-1 px-2 py-1 font-ui text-[12px] font-semibold ${
-              active ? "bg-arcio-accent text-arcio-text" : "bg-arcio-surface text-arcio-text hover:bg-arcio-accent"
+            className={`brutal-border min-w-[120px] px-6 py-1.5 font-ui text-[13px] font-bold transition-all ${
+              active 
+                ? "bg-arcio-accent text-arcio-text shadow-[3px_3px_0px_var(--border)] -translate-x-[1px] -translate-y-[1px]" 
+                : "bg-arcio-surface text-arcio-text hover:bg-arcio-accent"
             }`}
             style={{ borderRadius: "var(--radius)" }}
           >

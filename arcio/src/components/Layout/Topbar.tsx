@@ -17,7 +17,9 @@ export function Topbar({ searchOpen, onToggleSearch, onCloseSearch }: Props) {
     <header className="flex h-10 shrink-0 items-center gap-2 border-b-2 border-arcio-border bg-arcio-surface px-2">
       {!searchOpen ? (
         <>
-          <div className="min-w-0 shrink font-ui text-[15px] font-bold tracking-tight text-arcio-text">ARCIO</div>
+          <div className="flex items-center gap-1.5 min-w-0 shrink">
+            <img src="/logo.png" alt="ARCIO" className="h-6 w-6 object-contain" />
+          </div>
           <div className="ml-auto flex items-center gap-1">
             <button
               type="button"

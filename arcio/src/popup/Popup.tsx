@@ -7,7 +7,7 @@ import { NoteEditor } from "../components/Editor/NoteEditor";
 import { SnippetEditor } from "../components/Editor/SnippetEditor";
 import { StatusBar } from "../components/Layout/StatusBar";
 import { TabBar } from "../components/Layout/TabBar";
-import { Topbar } from "../components/Layout/Topbar";
+import { MenuBar } from "../components/Layout/MenuBar";
 import { SnippetExpandModal } from "../components/UI/SnippetExpandModal";
 import { Toast } from "../components/UI/Toast";
 import { useFilteredItems } from "../hooks/useSearch";
@@ -56,59 +56,57 @@ export function Popup() {
   const inEditor = !!active && (active.type === "note" || active.type === "snippet");
 
   return (
-    <div className="relative h-[600px] w-[420px] overflow-hidden border-2 border-arcio-border bg-arcio-bg font-ui shadow-none">
+    <div className="relative h-full w-full overflow-hidden border-2 border-arcio-border bg-arcio-bg font-ui shadow-none">
       <div className="notepad-bg flex h-full flex-col">
-        <Topbar
-          searchOpen={searchOpen}
-          onToggleSearch={() => setSearchOpen((v) => !v)}
-          onCloseSearch={() => {
-            setSearchOpen(false);
-          }}
-        />
-        <TabBar />
+        <div className="flex w-full flex-col h-full">
+          <MenuBar
+            onToggleSearch={() => setSearchOpen((v) => !v)}
+          />
+          <TabBar />
 
-        <main className="min-h-0 flex-1 overflow-y-auto px-2 py-2">
-          <div className="flex flex-col gap-2 pb-14">
-            {filtered.length === 0 ? (
-              <div className="border-2 border-dashed border-arcio-border p-4 text-center text-[13px] text-arcio-muted">
-                Nothing here yet. Tap + to create a note or snippet.
-              </div>
-            ) : (
-              filtered.map((item) =>
-                item.type === "note" ? (
-                  <NoteCard key={item.id} note={item} onOpen={(id) => setActiveItem(id)} />
-                ) : (
-                  <SnippetCard
-                    key={item.id}
-                    snippet={item}
-                    onOpen={(id) => setActiveItem(id)}
-                    onExpand={(id) => setExpandId(id)}
-                    onCopy={async (code) => {
-                      try {
-                        await navigator.clipboard.writeText(code);
-                      } catch {
-                        /* ignore */
-                      }
-                      setToast("Copied!");
-                    }}
-                  />
-                ),
-              )
-            )}
-          </div>
-        </main>
+          <main className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-14">
+              {filtered.length === 0 ? (
+                <div className="border-2 border-dashed border-arcio-border p-8 text-center text-[14px] text-arcio-muted bg-arcio-surface">
+                  Nothing here yet. Tap + to create a note or snippet.
+                </div>
+              ) : (
+                filtered.map((item) =>
+                  item.type === "note" ? (
+                    <NoteCard key={item.id} note={item} onOpen={(id) => setActiveItem(id)} />
+                  ) : (
+                    <SnippetCard
+                      key={item.id}
+                      snippet={item}
+                      onOpen={(id) => setActiveItem(id)}
+                      onExpand={(id) => setExpandId(id)}
+                      onCopy={async (code) => {
+                        try {
+                          await navigator.clipboard.writeText(code);
+                        } catch {
+                          /* ignore */
+                        }
+                        setToast("Copied!");
+                      }}
+                    />
+                  ),
+                )
+              )}
+            </div>
+          </main>
 
-        <StatusBar visibleCount={filtered.length} inEditor={inEditor} />
+          <StatusBar visibleCount={filtered.length} inEditor={inEditor} />
 
-        <button
-          type="button"
-          onClick={() => setFabOpen(true)}
-          className="brutal-border brutal-shadow absolute bottom-12 right-3 z-20 flex h-12 w-12 items-center justify-center bg-arcio-accent text-arcio-text hover:opacity-95"
-          style={{ borderRadius: "var(--radius)" }}
-          aria-label="Create"
-        >
-          <Plus className="h-6 w-6 stroke-[3]" />
-        </button>
+          <button
+            type="button"
+            onClick={() => setFabOpen(true)}
+            className="brutal-border brutal-shadow absolute bottom-12 right-6 z-20 flex h-14 w-14 items-center justify-center bg-arcio-accent text-arcio-text hover:opacity-95"
+            style={{ borderRadius: "var(--radius)" }}
+            aria-label="Create"
+          >
+            <Plus className="h-7 w-7 stroke-[3]" />
+          </button>
+        </div>
       </div>
 
       {fabOpen ? (

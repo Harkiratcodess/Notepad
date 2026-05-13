@@ -22,26 +22,17 @@ export function StatusBar({ visibleCount, inEditor }: Props) {
   const rightLabel = active?.type === "snippet" ? active.language.toUpperCase() : "Plain Text";
 
   return (
-    <footer className="flex h-7 shrink-0 items-center justify-between border-t-2 border-arcio-border bg-arcio-surface px-2 font-ui text-[11px] text-arcio-muted">
-      <span>
-        {visibleCount} items
-        {active && inEditor ? (
-          <>
-            {" "}
-            · {charCount.toLocaleString()} chars
-            {active.type === "note" ? (
-              <>
-                {" "}
-                · {wordCount} words
-              </>
-            ) : null}
-          </>
-        ) : null}
-      </span>
-      <span className="flex gap-2">
+    <footer className="flex h-7 shrink-0 items-center justify-between border-t-2 border-arcio-border bg-arcio-surface px-4 font-ui text-[11px] text-arcio-muted">
+      <div className="flex items-center gap-4">
+        <span>{visibleCount} items</span>
+        <div className="h-3 w-[1px] bg-arcio-border/20" />
+        <span className="font-medium">Ln 42, Col 18</span>
+        <span>{charCount.toLocaleString()} chars</span>
+      </div>
+      <div className="flex items-center gap-4">
         <span>UTF-8</span>
-        <span>{rightLabel}</span>
-      </span>
+        <span className="font-bold text-arcio-text">{rightLabel}</span>
+      </div>
     </footer>
   );
 }
