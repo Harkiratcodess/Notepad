@@ -1,4 +1,4 @@
-import { ArrowLeft, Pin, Trash2, Eye, Edit3 } from "lucide-react";
+import { ArrowLeft, Pin, Trash2, Eye, Edit3, Save, Check } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useStore } from "../../store/useStore";
@@ -25,6 +25,7 @@ export function NoteEditor({ note, onClose }: { note: Note; onClose: () => void 
   const [content, setContent] = useState(note.content);
   const [hintDismissed, setHintDismissed] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const noteIdRef = useRef(note.id);
 
   useEffect(() => {
@@ -47,6 +48,12 @@ export function NoteEditor({ note, onClose }: { note: Note; onClose: () => void 
   useEffect(() => {
     persist(title, content);
   }, [title, content, persist]);
+
+  const handleSave = useCallback(async () => {
+    setIsSaving(true);
+    await updateItem(note.id, { title, content });
+    setTimeout(() => setIsSaving(false), 1500);
+  }, [note.id, title, content, updateItem]);
 
   const showSnippetHint = useMemo(() => {
     if (hintDismissed) return false;
@@ -108,6 +115,15 @@ export function NoteEditor({ note, onClose }: { note: Note; onClose: () => void 
         </button>
         <button
           type="button"
+          onClick={() => void handleSave()}
+          className="brutal-border flex h-8 items-center gap-1 bg-arcio-accent px-2 text-[11px] font-bold text-arcio-text hover:opacity-90 transition-all active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
+          style={{ borderRadius: "var(--radius)" }}
+        >
+          {isSaving ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4" />}
+          {isSaving ? "Saved" : "Save"}
+        </button>
+        <button
+          type="button"
           onClick={() => void togglePin(note.id)}
           className={`brutal-border flex h-8 w-8 items-center justify-center bg-arcio-surface hover:bg-arcio-accent ${
             note.pinned ? "bg-arcio-accent" : ""
@@ -132,9 +148,10 @@ export function NoteEditor({ note, onClose }: { note: Note; onClose: () => void 
 
       <div className="min-h-0 flex-1 overflow-y-auto p-3">
         <input
+          autoFocus
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="mb-2 w-full border-none bg-transparent font-ui text-[18px] font-bold text-arcio-text outline-none"
+          className="mb-2 w-full border-none bg-transparent font-ui text-[18px] font-bold text-arcio-text outline-none focus:placeholder-transparent"
           placeholder="Title"
         />
 

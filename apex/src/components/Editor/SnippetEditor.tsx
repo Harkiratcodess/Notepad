@@ -1,7 +1,7 @@
 import "prismjs/themes/prism-tomorrow.css";
 
-import { ArrowLeft, Copy, Pin, Trash2 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { ArrowLeft, Copy, Pin, Trash2, Save, Check } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useStore } from "../../store/useStore";
 import type { Language, Snippet } from "../../types";
@@ -47,6 +47,7 @@ export function SnippetEditor({
   const [filename, setFilename] = useState(snippet.filename);
   const [language, setLanguage] = useState<Language>(snippet.language);
   const [code, setCode] = useState(snippet.code);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     setFilename(snippet.filename);
@@ -65,6 +66,12 @@ export function SnippetEditor({
   useEffect(() => {
     persist(filename, language, code);
   }, [filename, language, code, persist]);
+
+  const handleSave = useCallback(async () => {
+    setIsSaving(true);
+    await updateItem(snippet.id, { filename, language, code });
+    setTimeout(() => setIsSaving(false), 1500);
+  }, [snippet.id, filename, language, code, updateItem]);
 
   const previewHtml = useMemo(() => highlightCode(code, language), [code, language]);
 
@@ -98,6 +105,15 @@ export function SnippetEditor({
           <Copy className="h-4 w-4" />
           Copy
         </button>
+        <button
+          type="button"
+          onClick={() => void handleSave()}
+          className="brutal-border ml-2 flex h-8 items-center gap-1 bg-arcio-accent px-2 text-[11px] font-bold text-arcio-text hover:opacity-90 transition-all active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
+          style={{ borderRadius: "var(--radius)" }}
+        >
+          {isSaving ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4" />}
+          {isSaving ? "Saved" : "Save"}
+        </button>
         <div className="flex-1" />
         <button
           type="button"
@@ -125,9 +141,10 @@ export function SnippetEditor({
 
       <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3">
         <input
+          autoFocus
           value={filename}
           onChange={(e) => setFilename(e.target.value)}
-          className="w-full border-none bg-transparent font-ui text-[18px] font-bold text-arcio-text outline-none"
+          className="w-full border-none bg-transparent font-ui text-[18px] font-bold text-arcio-text outline-none focus:placeholder-transparent"
           placeholder="filename.ext"
         />
 

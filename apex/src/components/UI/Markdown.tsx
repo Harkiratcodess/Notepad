@@ -10,20 +10,27 @@ export function Markdown({ content, className = "" }: Props) {
     <div className={`markdown-body ${className}`}>
       <ReactMarkdown
         components={{
-          h1: ({ ...props }) => <h1 className="text-xl font-black mb-2 border-b-2 border-arcio-border pb-1" {...props} />,
-          h2: ({ ...props }) => <h2 className="text-lg font-bold mb-2 border-b-2 border-arcio-border/50" {...props} />,
-          h3: ({ ...props }) => <h3 className="text-[16px] font-bold mb-1" {...props} />,
-          p: ({ ...props }) => <p className="mb-2 leading-relaxed" {...props} />,
-          ul: ({ ...props }) => <ul className="list-disc list-inside mb-2 ml-2" {...props} />,
-          ol: ({ ...props }) => <ol className="list-decimal list-inside mb-2 ml-2" {...props} />,
-          li: ({ ...props }) => <li className="mb-0.5" {...props} />,
+          h1: ({ ...props }) => (
+            <h1 className="brutal-border mb-4 bg-arcio-accent px-2 py-1 text-xl font-black brutal-shadow" {...props} />
+          ),
+          h2: ({ ...props }) => (
+            <h2 className="brutal-border mb-3 inline-block bg-arcio-accent-green/20 px-2 py-0.5 text-lg font-bold" {...props} />
+          ),
+          h3: ({ ...props }) => <h3 className="mb-2 text-[16px] font-extrabold underline decoration-2 underline-offset-4" {...props} />,
+          p: ({ ...props }) => <p className="mb-3 leading-relaxed text-arcio-text" {...props} />,
+          ul: ({ ...props }) => <ul className="mb-3 list-disc list-inside space-y-1 ml-1" {...props} />,
+          ol: ({ ...props }) => <ol className="mb-3 list-decimal list-inside space-y-1 ml-1" {...props} />,
+          li: ({ ...props }) => <li className="font-ui text-[13px]" {...props} />,
           blockquote: ({ ...props }) => (
-            <blockquote className="border-l-4 border-arcio-accent bg-arcio-surface pl-3 py-1 my-2 italic" {...props} />
+            <blockquote className="brutal-border my-4 border-l-8 bg-arcio-surface p-3 italic brutal-shadow" {...props} />
           ),
           code: ({ ...props }) => (
-            <code className="bg-arcio-surface brutal-border px-1 font-code text-[12px]" {...props} />
+            <code className="brutal-border rounded-sm bg-arcio-bg px-1.5 py-0.5 font-code text-[11px] font-bold text-arcio-accent" {...props} />
           ),
-          a: ({ ...props }) => <a className="text-arcio-accent underline hover:opacity-80" {...props} />,
+          a: ({ ...props }) => (
+            <a className="font-bold text-arcio-accent-green underline decoration-2 hover:bg-arcio-accent-green/10" {...props} />
+          ),
+          hr: () => <hr className="my-6 border-2 border-dashed border-arcio-border" />,
         }}
       >
         {content}
